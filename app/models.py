@@ -1,7 +1,15 @@
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from api.extensions import db, login_manager
+from extensions import db, login_manager
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+    slug = db.Column(db.String(50), unique=True, nullable=False)
+    
+    def __repr__(self):
+        return f'<Category {self.name}>'
 
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -11,6 +19,12 @@ class Article(db.Model):
     source_link = db.Column(db.String(500))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     author = db.Column(db.String(100))
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)
+    category = db.relationship('Category', backref=db.backref('articles', lazy=True))
+    
+    # 새로운 필드 추가
+    is_main = db.Column(db.Boolean, default=False)  # 메인 기사 여부
+    main_image = db.Column(db.String(500))  # 메인 이미지 URL
     
     def __repr__(self):
         return f'<Article {self.title}>'

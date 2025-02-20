@@ -17,8 +17,8 @@ print("Loading environment variables...")
 print("POSTGRES_URL:", os.environ.get('POSTGRES_URL'))
 
 from flask import Flask
-from api.extensions import init_extensions, db
-from app.models import Admin, Article
+from extensions import init_extensions, db, migrate
+from app.models import Admin, Article, Category
 
 def create_app():
     app = Flask(__name__, 
@@ -63,14 +63,14 @@ def create_app():
     # Print configuration for debugging
     print("Database URL:", app.config['SQLALCHEMY_DATABASE_URI'])
 
-    # Import routes
+    # Import and register blueprints
     from app.main.routes import bp as main_bp
     from app.auth.routes import bp as auth_bp
     from app.admin.routes import bp as admin_bp
 
-    app.register_blueprint(main_bp)
-    app.register_blueprint(auth_bp, url_prefix='/auth')
-    app.register_blueprint(admin_bp, url_prefix='/admin')
+    app.register_blueprint(main_bp)  # 메인 Blueprint: URL 접두사 없음
+    app.register_blueprint(auth_bp, url_prefix='/auth')  # 인증 관련 URL: /auth/...
+    app.register_blueprint(admin_bp, url_prefix='/admin')  # 관리자 URL: /admin/...
 
     return app
 
@@ -79,9 +79,28 @@ app = create_app()
 # For Vercel
 application = app
 
+def init_categories():
+    categories = [
+        {'name': '정치', 'slug': 'politics'},
+        {'name': '경제', 'slug': 'economy'},
+        {'name': '사회', 'slug': 'society'},
+        {'name': '문화', 'slug': 'culture'},
+        {'name': '국제', 'slug': 'international'},
+        {'name': 'IT', 'slug': 'it'},
+        {'name': '스포츠', 'slug': 'sports'}
+    ]
+    
+    for cat_data in categories:
+        if not Category.query.filter_by(slug=cat_data['slug']).first():
+            category = Category(name=cat_data['name'], slug=cat_data['slug'])
+            db.session.add(category)
+    
+    db.session.commit()
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+        init_categories()  # 카테고리 초기화
         # Create default admin user if not exists
         if not Admin.query.filter_by(username='admin').first():
             admin = Admin(username='admin', email='admin@example.com')

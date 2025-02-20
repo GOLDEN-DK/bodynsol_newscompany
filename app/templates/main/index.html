@@ -1,60 +1,115 @@
-{% extends "base.html" %} {% block title %}뉴스 홈{% endblock %} {% block
-content %}
+{% extends "base.html" %} {% block title %}홈{% endblock %} {% block content %}
 <div class="container">
+  <!-- 메인 기사 섹션 -->
+  {% for article in articles.items %} {% if article.is_main %}
+  <div class="main-article mb-5">
+    <h1 class="display-4 mb-3">{{ article.title }}</h1>
+    {% if article.main_image %}
+    <div class="main-image-container mb-3">
+      <img
+        src="{{ article.main_image }}"
+        alt="{{ article.title }}"
+        class="img-fluid w-100 main-image"
+      />
+    </div>
+    {% endif %}
+    <p class="lead">
+      {{ article.content[:100]|striptags ~ '...' if article.content|length > 100
+      else article.content|striptags }}
+    </p>
+    <div class="article-meta mb-3">
+      <small class="text-muted">
+        {{ article.category.name if article.category }} | {{
+        article.created_at.strftime('%Y-%m-%d') }} | {{ article.author }}
+      </small>
+    </div>
+    <a
+      href="{{ url_for('main.article', id=article.id) }}"
+      class="btn btn-primary"
+      >자세히 보기</a
+    >
+  </div>
+  {% endif %} {% endfor %}
+
+  <!-- 일반 기사 목록 -->
   <div class="row">
-    <div class="col-12">
-      <h1 class="mb-4">최신 뉴스</h1>
-      {% for article in articles.items %}
-      <div class="card mb-4 article-card">
+    {% for article in articles.items %} {% if not article.is_main %}
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
         <div class="card-body">
-          <h2 class="card-title h4">{{ article.title }}</h2>
+          <h2 class="card-title h5">{{ article.title }}</h2>
           {% if article.summary %}
-          <p class="card-text">{{ article.summary }}</p>
+          <p class="card-text">{{ article.summary|striptags }}</p>
+          {% else %}
+          <p class="card-text">
+            {{ article.content[:100]|striptags ~ '...' if article.content|length
+            > 100 else article.content|striptags }}
+          </p>
           {% endif %}
           <div class="article-meta mb-2">
             <small class="text-muted">
-              작성자: {{ article.author }} | 작성일: {{
+              {{ article.category.name if article.category }} | {{
               article.created_at.strftime('%Y-%m-%d') }}
             </small>
           </div>
           <a
             href="{{ url_for('main.article', id=article.id) }}"
-            class="btn btn-primary"
+            class="btn btn-sm btn-primary"
             >자세히 보기</a
           >
         </div>
       </div>
-      {% else %}
-      <div class="alert alert-info">등록된 뉴스가 없습니다.</div>
-      {% endfor %}
-
-      <!-- Pagination -->
-      {% if articles.items %}
-      <nav aria-label="Page navigation">
-        <ul class="pagination">
-          {% if articles.has_prev %}
-          <li class="page-item">
-            <a
-              class="page-link"
-              href="{{ url_for('main.index', page=articles.prev_num) }}"
-            >
-              이전
-            </a>
-          </li>
-          {% endif %} {% if articles.has_next %}
-          <li class="page-item">
-            <a
-              class="page-link"
-              href="{{ url_for('main.index', page=articles.next_num) }}"
-            >
-              다음
-            </a>
-          </li>
-          {% endif %}
-        </ul>
-      </nav>
-      {% endif %}
     </div>
+    {% endif %} {% endfor %}
   </div>
+
+  <!-- 페이지네이션 -->
+  {% if articles.pages > 1 %}
+  <nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+      {% if articles.has_prev %}
+      <li class="page-item">
+        <a
+          class="page-link"
+          href="{{ url_for('main.index', page=articles.prev_num) }}"
+        >
+          이전
+        </a>
+      </li>
+      {% endif %} {% if articles.has_next %}
+      <li class="page-item">
+        <a
+          class="page-link"
+          href="{{ url_for('main.index', page=articles.next_num) }}"
+        >
+          다음
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
 </div>
+
+<style>
+  .main-image-container {
+    height: 500px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .main-image {
+    width: 1300px;
+    height: 500px;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .main-article {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+</style>
 {% endblock %}
