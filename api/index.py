@@ -1,8 +1,20 @@
 import os
 import sys
+from dotenv import load_dotenv
+from pathlib import Path
+
+# Get the project root directory
+project_root = Path(__file__).parent.parent
+
+# Load environment variables from .env file
+load_dotenv(project_root / '.env.development.local')
 
 # Add the project root directory to Python path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(str(project_root))
+
+# Print environment variables for debugging
+print("Loading environment variables...")
+print("POSTGRES_URL:", os.environ.get('POSTGRES_URL'))
 
 from flask import Flask
 from api.extensions import init_extensions, db
@@ -17,7 +29,20 @@ def create_app():
 
     # Basic config
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key-please-change')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+    
+    # Database URL configuration
+    postgres_url = os.environ.get('POSTGRES_URL')
+    if not postgres_url:
+        raise RuntimeError(
+            'POSTGRES_URL environment variable is not set. '
+            'Please run "vercel env pull .env.development.local" to get your environment variables.'
+        )
+    
+    # Convert postgres:// to postgresql:// if necessary
+    if postgres_url.startswith('postgres://'):
+        postgres_url = postgres_url.replace('postgres://', 'postgresql://', 1)
+    
+    app.config['SQLALCHEMY_DATABASE_URI'] = postgres_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     # Vercel specific configuration
@@ -34,6 +59,9 @@ def create_app():
 
     # Initialize extensions
     init_extensions(app)
+    
+    # Print configuration for debugging
+    print("Database URL:", app.config['SQLALCHEMY_DATABASE_URI'])
 
     # Import routes
     from app.main.routes import bp as main_bp
