@@ -11,13 +11,18 @@ from app.models import Admin, Article
 def create_app():
     app = Flask(__name__, 
         template_folder='../app/templates',
-        static_folder='../app/static'
+        static_folder='../app/static',
+        instance_relative_config=True
     )
 
     # Basic config
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key-please-change')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///app.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    
+    # Vercel specific configuration
+    app.config['INSTANCE_PATH'] = '/tmp'  # Use /tmp directory instead
+    app.instance_path = '/tmp'  # Override instance path
 
     # 환경 설정
     if os.environ.get('FLASK_ENV') == 'production':

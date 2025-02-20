@@ -14,6 +14,7 @@
   ],
   "env": {
     "FLASK_ENV": "production",
-    "PYTHON_VERSION": "3.9"
+    "PYTHON_VERSION": "3.9",
+    "INSTANCE_PATH": "/tmp"
   }
 }
