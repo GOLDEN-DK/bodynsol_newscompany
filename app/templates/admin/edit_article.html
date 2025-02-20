@@ -1,0 +1,45 @@
+{% extends "base.html" %} {% block title %}기사 수정{% endblock %} {% block
+content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <h1 class="mb-4">기사 수정</h1>
+      <form method="POST">
+        <div class="mb-3">
+          <label for="title" class="form-label">제목</label>
+          <input
+            type="text"
+            class="form-control"
+            id="title"
+            name="title"
+            value="{{ article.title }}"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="summary" class="form-label">요약</label>
+          <textarea class="form-control" id="summary" name="summary" rows="3">
+{{ article.summary }}</textarea
+          >
+        </div>
+        <div class="mb-3">
+          <label for="content" class="form-label">내용</label>
+          <textarea
+            class="form-control"
+            id="content"
+            name="content"
+            rows="10"
+            required
+          >
+{{ article.content }}</textarea
+          >
+        </div>
+        <button type="submit" class="btn btn-primary">저장</button>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary"
+          >취소</a
+        >
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
