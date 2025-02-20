@@ -1,6 +1,7 @@
 from flask import render_template, request
 from app.main import bp
 from app.models import Article
+from api.extensions import db
 
 @bp.route('/')
 def index():
