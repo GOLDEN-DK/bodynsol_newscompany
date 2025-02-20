@@ -1,8 +1,19 @@
 {% extends "base.html" %} {% block title %}새 기사 작성{% endblock %} {% block
-content %}
+styles %} {{ super() }}
+<script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
+<style>
+  .ck-editor__editable {
+    min-height: 400px;
+  }
+  .ck-content .image {
+    max-width: 100%;
+    margin: 20px auto;
+  }
+</style>
+{% endblock %} {% block content %}
 <div class="container">
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-12">
       <h1 class="mb-4">새 기사 작성</h1>
       <form method="POST">
         <div class="mb-3">
@@ -30,9 +41,17 @@ content %}
             class="form-control"
             id="content"
             name="content"
-            rows="10"
             required
           ></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="source_link" class="form-label">원문 링크</label>
+          <input
+            type="url"
+            class="form-control"
+            id="source_link"
+            name="source_link"
+          />
         </div>
         <button type="submit" class="btn btn-primary">저장</button>
         <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary"
@@ -42,4 +61,37 @@ content %}
     </div>
   </div>
 </div>
+{% endblock %} {% block scripts %} {{ super() }}
+<script>
+  ClassicEditor.create(document.querySelector("#content"), {
+    toolbar: [
+      "heading",
+      "|",
+      "bold",
+      "italic",
+      "link",
+      "bulletedList",
+      "numberedList",
+      "|",
+      "imageUpload",
+      "blockQuote",
+      "insertTable",
+      "mediaEmbed",
+      "undo",
+      "redo",
+    ],
+    image: {
+      toolbar: [
+        "imageStyle:inline",
+        "imageStyle:block",
+        "imageStyle:side",
+        "|",
+        "toggleImageCaption",
+        "imageTextAlternative",
+      ],
+    },
+  }).catch((error) => {
+    console.error(error);
+  });
+</script>
 {% endblock %}
