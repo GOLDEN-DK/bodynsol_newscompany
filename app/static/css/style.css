@@ -1,0 +1,14 @@
+/* Custom styles */
+.article-card {
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.article-meta {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.pagination {
+  margin-top: 20px;
+}
