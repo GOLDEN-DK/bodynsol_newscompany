@@ -15,16 +15,16 @@ class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
-    summary = db.Column(db.String(500))
-    source_link = db.Column(db.String(500))
+    summary = db.Column(db.String(500), nullable=True)
+    source_link = db.Column(db.String(500), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    author = db.Column(db.String(100))
+    author = db.Column(db.String(100), nullable=True)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)
     category = db.relationship('Category', backref=db.backref('articles', lazy=True))
     
     # 새로운 필드 추가
     is_main = db.Column(db.Boolean, default=False)  # 메인 기사 여부
-    main_image = db.Column(db.String(500))  # 메인 이미지 URL
+    main_image = db.Column(db.String(500), nullable=True)  # 메인 이미지 URL
     
     def __repr__(self):
         return f'<Article {self.title}>'

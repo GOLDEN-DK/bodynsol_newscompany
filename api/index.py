@@ -19,7 +19,7 @@ print("Loading environment variables...")
 print("POSTGRES_URL:", os.environ.get('POSTGRES_URL'))
 
 from flask import Flask
-from extensions import init_extensions, db, migrate
+from extensions import init_extensions, db
 from app.models import Admin, Article, Category
 
 def create_app():
@@ -56,41 +56,32 @@ def create_app():
 
     return app
 
-def setup_database(app):
-    """데이터베이스 초기 설정"""
-    with app.app_context():
-        # 데이터베이스 테이블 생성
-        db.create_all()
-        
-        # 카테고리 초기화
-        categories = [
-            {'name': '정치', 'slug': 'politics'},
-            {'name': '경제', 'slug': 'economy'},
-            {'name': '사회', 'slug': 'society'},
-            {'name': '문화', 'slug': 'culture'},
-            {'name': '국제', 'slug': 'international'},
-            {'name': 'IT', 'slug': 'it'},
-            {'name': '스포츠', 'slug': 'sports'}
-        ]
-        
-        for cat_data in categories:
-            if not Category.query.filter_by(slug=cat_data['slug']).first():
-                category = Category(name=cat_data['name'], slug=cat_data['slug'])
-                db.session.add(category)
-        
-        # 관리자 계정 생성
-        if not Admin.query.filter_by(username='admin').first():
-            admin = Admin(username='admin', email='admin@example.com')
-            admin.set_password('password')
-            db.session.add(admin)
-        
-        try:
-            db.session.commit()
-            print("Database initialized successfully")
-        except Exception as e:
-            db.session.rollback()
-            print(f"Error initializing database: {e}")
-            raise
+def init_database(app):
+    """데이터베이스 초기화"""
+    categories = [
+        {'name': '정치', 'slug': 'politics'},
+        {'name': '경제', 'slug': 'economy'},
+        {'name': '사회', 'slug': 'society'},
+        {'name': '문화', 'slug': 'culture'},
+        {'name': '국제', 'slug': 'international'},
+        {'name': 'IT', 'slug': 'it'},
+        {'name': '스포츠', 'slug': 'sports'}
+    ]
+    
+    # 카테고리 생성
+    for cat_data in categories:
+        if not Category.query.filter_by(slug=cat_data['slug']).first():
+            category = Category(name=cat_data['name'], slug=cat_data['slug'])
+            db.session.add(category)
+    
+    # 관리자 계정 생성
+    if not Admin.query.filter_by(username='admin').first():
+        admin = Admin(username='admin', email='admin@example.com')
+        admin.set_password('password')
+        db.session.add(admin)
+    
+    db.session.commit()
+    print("Database initialized successfully")
 
 app = create_app()
 
@@ -98,9 +89,12 @@ app = create_app()
 application = app
 
 if __name__ == '__main__':
-    try:
-        setup_database(app)
-    except Exception as e:
-        print(f"Failed to setup database: {e}")
+    with app.app_context():
+        try:
+            db.create_all()  # 테이블 생성
+            init_database(app)  # 초기 데이터 생성
+        except Exception as e:
+            print(f"Error during database setup: {e}")
+            db.session.rollback()
     
     app.run(debug=True) 
