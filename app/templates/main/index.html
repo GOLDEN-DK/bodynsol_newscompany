@@ -14,8 +14,9 @@
     </div>
     {% endif %}
     <p class="lead">
-      {{ article.content[:100]|striptags ~ '...' if article.content|length > 100
-      else article.content|striptags }}
+      {% if article.summary %} {{ article.summary|striptags }} {% else %} {{
+      article.content[:100]|striptags ~ '...' if article.content|length > 100
+      else article.content|striptags }} {% endif %}
     </p>
     <div class="article-meta mb-3">
       <small class="text-muted">

@@ -1,45 +1,106 @@
-{% extends "base.html" %} {% block title %}기사 수정{% endblock %} {% block
-content %}
+{% extends "base.html" %}
+{% block title %}기사 수정{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<style>
+  .ck-editor__editable {
+    min-height: 400px;
+  }
+  #editor {
+    min-height: 300px;
+    margin-bottom: 1rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
 <div class="container">
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-12">
       <h1 class="mb-4">기사 수정</h1>
-      <form method="POST">
+      <form method="POST" id="articleForm">
+        <div class="mb-3">
+          <label for="category" class="form-label">카테고리</label>
+          <select class="form-select" id="category" name="category_id" required>
+            <option value="">카테고리 선택</option>
+            {% for category in categories %}
+            <option value="{{ category.id }}" {% if category.id == article.category_id %}selected{% endif %}>
+              {{ category.name }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
         <div class="mb-3">
           <label for="title" class="form-label">제목</label>
-          <input
-            type="text"
-            class="form-control"
-            id="title"
-            name="title"
-            value="{{ article.title }}"
-            required
-          />
+          <input type="text" class="form-control" id="title" name="title" value="{{ article.title }}" required>
         </div>
         <div class="mb-3">
           <label for="summary" class="form-label">요약</label>
-          <textarea class="form-control" id="summary" name="summary" rows="3">
-{{ article.summary }}</textarea
-          >
+          <textarea class="form-control" id="summary" name="summary" rows="3">{{ article.summary }}</textarea>
         </div>
         <div class="mb-3">
-          <label for="content" class="form-label">내용</label>
-          <textarea
-            class="form-control"
-            id="content"
-            name="content"
-            rows="10"
-            required
-          >
-{{ article.content }}</textarea
-          >
+          <label for="editor" class="form-label">내용</label>
+          <textarea id="editor" name="content" required>{{ article.content }}</textarea>
         </div>
-        <button type="submit" class="btn btn-primary">저장</button>
-        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary"
-          >취소</a
-        >
+        <div class="mb-3">
+          <label for="source_link" class="form-label">원문 링크</label>
+          <input type="url" class="form-control" id="source_link" name="source_link" value="{{ article.source_link }}">
+        </div>
+        <div class="mb-3">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="is_main" name="is_main" {% if article.is_main %}checked{% endif %}>
+            <label class="form-check-label" for="is_main">메인 기사로 설정</label>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="main_image" class="form-label">메인 이미지 URL</label>
+          <input type="url" class="form-control" id="main_image" name="main_image" 
+                 value="{{ article.main_image }}"
+                 placeholder="메인 기사일 경우 1300x500 크기의 이미지 URL을 입력하세요">
+          <small class="form-text text-muted">권장 이미지 크기: 1300x500 픽셀</small>
+        </div>
+        <div class="mb-3">
+          <button type="submit" class="btn btn-primary">저장</button>
+          <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">취소</a>
+        </div>
       </form>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/translations/ko.js"></script>
+<script>
+window.onload = function() {
+    const editorElement = document.querySelector("#editor");
+    if (!editorElement) {
+        console.error("Editor element not found");
+        return;
+    }
+
+    ClassicEditor
+        .create(editorElement, {
+            toolbar: ['bold', 'italic', 'link'],
+            language: 'ko'
+        })
+        .then(editor => {
+            console.log("Editor initialized successfully");
+            
+            const form = document.querySelector("#articleForm");
+            if (form) {
+                form.onsubmit = () => {
+                    editorElement.value = editor.getData();
+                    return true;
+                };
+            }
+        })
+        .catch(error => {
+            console.error("Editor initialization failed:", error);
+        });
+};
+</script>
 {% endblock %}

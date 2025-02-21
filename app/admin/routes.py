@@ -57,10 +57,16 @@ def edit_article(id):
         article.content = request.form['content']
         article.summary = request.form['summary']
         article.source_link = request.form.get('source_link')
+        article.category_id = request.form['category_id']
+        article.is_main = bool(request.form.get('is_main'))
+        article.main_image = request.form.get('main_image')
+        
         db.session.commit()
         flash('기사가 성공적으로 수정되었습니다.', 'success')
         return redirect(url_for('admin.dashboard'))
-    return render_template('admin/edit_article.html', article=article)
+    
+    categories = Category.query.all()
+    return render_template('admin/edit_article.html', article=article, categories=categories)
 
 @bp.route('/article/<int:id>/delete', methods=['POST'])
 @login_required
