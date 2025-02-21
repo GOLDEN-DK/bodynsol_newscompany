@@ -42,7 +42,7 @@ def create_article():
                 content=request.form['content'],
                 summary=request.form.get('summary', ''),
                 source_link=request.form.get('source_link', ''),
-                author=current_user.username,
+                author="바디앤솔매거진",  # 작성자를 고정값으로 설정
                 category_id=request.form.get('category_id'),
                 is_main=bool(request.form.get('is_main')),
                 main_image=request.form.get('main_image', '')

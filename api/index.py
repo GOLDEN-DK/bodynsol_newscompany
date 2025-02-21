@@ -59,6 +59,7 @@ def create_app():
 def init_database(app):
     """데이터베이스 초기화"""
     categories = [
+        {'name': '건강', 'slug': 'health'},
         {'name': '정치', 'slug': 'politics'},
         {'name': '경제', 'slug': 'economy'},
         {'name': '사회', 'slug': 'society'},
