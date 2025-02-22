@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_required, current_user
 from app.admin import bp
 from app.models import Article, Category
@@ -15,7 +15,8 @@ def dashboard():
         Article.id,
         Article.title,
         Article.author,
-        Article.created_at
+        Article.created_at,
+        Article.is_main
     ).order_by(
         Article.created_at.desc()
     ).paginate(
@@ -93,4 +94,24 @@ def delete_article(id):
     db.session.delete(article)
     db.session.commit()
     flash('기사가 삭제되었습니다.', 'success')
-    return redirect(url_for('admin.dashboard')) 
+    return redirect(url_for('admin.dashboard'))
+
+@bp.route('/toggle_main/<int:id>', methods=['POST'])
+@login_required
+def toggle_main(id):
+    article = Article.query.get_or_404(id)
+    data = request.get_json()
+    
+    try:
+        article.is_main = data.get('is_main', False)
+        db.session.commit()
+        return jsonify({
+            'success': True,
+            'is_main': article.is_main
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500 

@@ -29,32 +29,45 @@ block content %}
               <td>{{ article.author }}</td>
               <td>{{ article.created_at.strftime('%Y-%m-%d') }}</td>
               <td>
-                <a
-                  href="{{ url_for('admin.edit_article', id=article.id) }}"
-                  class="btn btn-sm btn-outline-primary"
-                >
-                  수정
-                </a>
-                <a
-                  href="{{ url_for('main.article', id=article.id) }}"
-                  class="btn btn-sm btn-outline-secondary"
-                  target="_blank"
-                >
-                  보기
-                </a>
-                <form
-                  action="{{ url_for('admin.delete_article', id=article.id) }}"
-                  method="POST"
-                  style="display: inline"
-                >
-                  <button
-                    type="submit"
-                    class="btn btn-sm btn-outline-danger"
-                    onclick="return confirm('정말 삭제하시겠습니까?')"
+                <div class="btn-group" role="group">
+                  <a
+                    href="{{ url_for('admin.edit_article', id=article.id) }}"
+                    class="btn btn-sm btn-outline-primary"
                   >
-                    삭제
+                    수정
+                  </a>
+                  <a
+                    href="{{ url_for('main.article', id=article.id) }}"
+                    class="btn btn-sm btn-outline-secondary"
+                    target="_blank"
+                  >
+                    보기
+                  </a>
+                  
+                  <!-- 메인 노출 토글 버튼 추가 -->
+                  <button
+                    class="btn btn-sm {% if article.is_main %}btn-success{% else %}btn-outline-success{% endif %} toggle-main"
+                    data-article-id="{{ article.id }}"
+                    data-is-main="{{ article.is_main|int }}"
+                    onclick="toggleMainStatus(this)"
+                  >
+                    메인{% if article.is_main %}✓{% endif %}
                   </button>
-                </form>
+                  
+                  <form
+                    action="{{ url_for('admin.delete_article', id=article.id) }}"
+                    method="POST"
+                    style="display: inline"
+                  >
+                    <button
+                      type="submit"
+                      class="btn btn-sm btn-outline-danger"
+                      onclick="return confirm('정말 삭제하시겠습니까?')"
+                    >
+                      삭제
+                    </button>
+                  </form>
+                </div>
               </td>
             </tr>
             {% else %}
@@ -108,4 +121,44 @@ block content %}
     </div>
   </div>
 </div>
+{% endblock %}
+
+<!-- 페이지 하단에 JavaScript 추가 -->
+{% block scripts %}
+<script>
+function toggleMainStatus(button) {
+  const articleId = button.dataset.articleId;
+  const isMain = button.dataset.isMain === "1";
+  
+  fetch(`/admin/toggle_main/${articleId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ is_main: !isMain })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // 버튼 상태 업데이트
+      button.dataset.isMain = data.is_main ? "1" : "0";
+      if (data.is_main) {
+        button.classList.remove('btn-outline-success');
+        button.classList.add('btn-success');
+        button.innerHTML = '메인✓';
+      } else {
+        button.classList.remove('btn-success');
+        button.classList.add('btn-outline-success');
+        button.innerHTML = '메인';
+      }
+    } else {
+      alert('메인 노출 상태 변경에 실패했습니다.');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('메인 노출 상태 변경 중 오류가 발생했습니다.');
+  });
+}
+</script>
 {% endblock %}
