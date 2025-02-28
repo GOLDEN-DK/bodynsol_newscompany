@@ -1,20 +1,101 @@
 {% extends "base.html" %} {% block title %}{{ article.title }}{% endblock %} {%
-block content %}
+block styles %} {{ super() }}
+<style>
+  /* 모바일 최적화를 위한 스타일 */
+  .article-container {
+    padding: 15px;
+    max-width: 100%;
+    word-wrap: break-word;
+  }
+
+  .article-title {
+    font-size: 1.8rem;
+    line-height: 1.3;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .article-title {
+      font-size: 1.5rem;
+    }
+
+    .article-content {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      margin: 1rem 0;
+    }
+  }
+
+  .article-meta {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+  }
+
+  .article-summary {
+    font-size: 1.1rem;
+    color: #444;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+  }
+
+  .article-content {
+    line-height: 1.8;
+    margin-bottom: 2rem;
+  }
+
+  .article-content p {
+    margin-bottom: 1rem;
+  }
+
+  .article-content img {
+    max-width: 100%;
+    height: auto;
+    margin: 1rem 0;
+  }
+
+  .back-button {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+</style>
+{% endblock %} {% block content %}
 <div class="container">
-  <div class="row">
-    <div class="col-md-8">
-      <article>
-        <h1 class="mb-4">{{ article.title }}</h1>
-        <div class="article-meta mb-4">
-          <small class="text-muted">
-            작성자: {{ article.author }} | 작성일: {{
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+      <article class="article-container">
+        <h1 class="article-title">{{ article.title }}</h1>
+
+        <div class="article-meta">
+          <span class="me-3">
+            <i class="fas fa-user"></i> {{ article.author }}
+          </span>
+          <span class="me-3">
+            <i class="fas fa-calendar"></i> {{
             article.created_at.strftime('%Y-%m-%d') }}
-          </small>
+          </span>
+          {% if article.category %}
+          <span>
+            <i class="fas fa-folder"></i> {{ article.category.name }}
+          </span>
+          {% endif %}
         </div>
+
         {% if article.summary %}
-        <div class="lead mb-4">{{ article.summary }}</div>
+        <div class="article-summary">{{ article.summary }}</div>
         {% endif %}
+
         <div class="article-content">{{ article.content | safe }}</div>
+
         {% if article.source_link %}
         <div class="mt-4">
           <a
@@ -22,26 +103,30 @@ block content %}
             target="_blank"
             class="btn btn-outline-primary"
           >
-            원문 보기
+            <i class="fas fa-external-link-alt"></i> 원문 보기
           </a>
         </div>
         {% endif %}
-      </article>
 
-      <div class="mt-4">
-        {% if request.referrer %}
-          <!-- 이전 페이지가 있으면 해당 페이지로 돌아가기 -->
+        <div class="back-button">
+          {% if request.referrer %}
           <a href="{{ request.referrer }}" class="btn btn-secondary">
-            목록으로 돌아가기
+            <i class="fas fa-arrow-left"></i> 목록으로 돌아가기
           </a>
-        {% else %}
-          <!-- 이전 페이지 정보가 없으면 메인으로 돌아가기 -->
+          {% else %}
           <a href="{{ url_for('main.index') }}" class="btn btn-secondary">
-            목록으로 돌아가기
+            <i class="fas fa-home"></i> 홈으로 돌아가기
           </a>
-        {% endif %}
-      </div>
+          {% endif %}
+        </div>
+      </article>
     </div>
   </div>
 </div>
+{% endblock %} {% block scripts %} {{ super() }}
+<!-- Font Awesome 아이콘 추가 -->
+<script
+  src="https://kit.fontawesome.com/your-font-awesome-kit.js"
+  crossorigin="anonymous"
+></script>
 {% endblock %}
