@@ -4,6 +4,7 @@ from flask_login import UserMixin
 from extensions import db, login_manager
 
 class Category(db.Model):
+    __tablename__ = 'category'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
     slug = db.Column(db.String(50), unique=True, nullable=False)
@@ -12,6 +13,7 @@ class Category(db.Model):
         return f'<Category {self.name}>'
 
 class Article(db.Model):
+    __tablename__ = 'article'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
@@ -30,6 +32,7 @@ class Article(db.Model):
         return f'<Article {self.title}>'
 
 class Admin(UserMixin, db.Model):
+    __tablename__ = 'admin'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
