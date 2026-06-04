@@ -14,10 +14,6 @@ load_dotenv(project_root / '.env.development.local')
 # Add the project root directory to Python path
 sys.path.append(str(project_root))
 
-# Print environment variables for debugging
-print("Loading environment variables...")
-print("POSTGRES_URL:", os.environ.get('POSTGRES_URL'))
-
 from flask import Flask
 from extensions import init_extensions, db
 from app.models import Admin, Article, Category
@@ -42,9 +38,6 @@ def create_app():
     # 데이터베이스 초기화
     init_extensions(app)
     
-    # Print configuration for debugging
-    print("Database URL:", app.config['SQLALCHEMY_DATABASE_URI'])
-
     # Import and register blueprints
     from app.main.routes import bp as main_bp
     from app.auth.routes import bp as auth_bp
