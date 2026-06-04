@@ -23,6 +23,7 @@ wheels/
 
 # Virtual Environment
 venv/
+.venv/
 ENV/
 
 # Flask
@@ -34,7 +35,8 @@ instance/
 *.sqlite
 
 # Environment variables
-.env
+.env*
+!.env.example
 
 # IDE
 .idea/
@@ -43,5 +45,9 @@ instance/
 *.swo
 
 # Vercel
-.vercel 
 .vercel
+.vercel
+
+# Local tooling (이관 스크립트, Claude 로컬 설정)
+.claude/
+migrate_data.py
