@@ -35,6 +35,15 @@ def index():
 @bp.route('/article/<int:id>')
 def article(id):
     article = Article.query.get_or_404(id)
+
+    # SQL expression으로 증가시켜 동시 요청에서도 조회수가 유실되지 않게 한다.
+    Article.query.filter_by(id=id).update(
+        {Article.view_count: db.func.coalesce(Article.view_count, 0) + 1},
+        synchronize_session=False
+    )
+    db.session.commit()
+    db.session.refresh(article)
+
     categories = Category.query.all()
     return render_template('main/article.html', article=article, categories=categories)
 
@@ -53,4 +62,4 @@ def category(slug):
         article.content = strip_html_tags(article.content)
     
     categories = Category.query.all()
-    return render_template('main/category.html', category=category, articles=articles, categories=categories) 
+    return render_template('main/category.html', category=category, articles=articles, categories=categories)

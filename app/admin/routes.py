@@ -16,6 +16,7 @@ def dashboard():
         Article.title,
         Article.author,
         Article.created_at,
+        Article.view_count,
         Article.is_main
     ).order_by(
         Article.created_at.desc()
@@ -114,4 +115,4 @@ def toggle_main(id):
         return jsonify({
             'success': False,
             'error': str(e)
-        }), 500 
+        }), 500

@@ -19,6 +19,7 @@ block content %}
               <th>제목</th>
               <th>작성자</th>
               <th>작성일</th>
+              <th class="text-center">조회수</th>
               <th>관리</th>
             </tr>
           </thead>
@@ -28,6 +29,7 @@ block content %}
               <td>{{ article.title }}</td>
               <td>{{ article.author }}</td>
               <td>{{ article.created_at.strftime('%Y-%m-%d') }}</td>
+              <td class="text-center">{{ article.view_count|default(0, true) }}</td>
               <td>
                 <div class="btn-group" role="group">
                   <a
@@ -72,7 +74,7 @@ block content %}
             </tr>
             {% else %}
             <tr>
-              <td colspan="4" class="text-center">등록된 기사가 없습니다.</td>
+              <td colspan="5" class="text-center">등록된 기사가 없습니다.</td>
             </tr>
             {% endfor %}
           </tbody>

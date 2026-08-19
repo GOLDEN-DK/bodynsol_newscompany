@@ -84,10 +84,13 @@ block styles %} {{ super() }}
             article.created_at.strftime('%Y-%m-%d') }}
           </span>
           {% if article.category %}
-          <span>
+          <span class="me-3">
             <i class="fas fa-folder"></i> {{ article.category.name }}
           </span>
           {% endif %}
+          <span>
+            <i class="fas fa-eye"></i> 조회 {{ article.view_count }}
+          </span>
         </div>
 
         {% if article.summary %}

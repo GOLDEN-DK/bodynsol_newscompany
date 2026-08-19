@@ -27,6 +27,12 @@ class Article(db.Model):
     # 새로운 필드 추가
     is_main = db.Column(db.Boolean, default=False)  # 메인 기사 여부
     main_image = db.Column(db.String(500), nullable=True)  # 메인 이미지 URL
+    view_count = db.Column(
+        db.Integer,
+        nullable=False,
+        default=0,
+        server_default="0"
+    )
     
     def __repr__(self):
         return f'<Article {self.title}>'
@@ -46,4 +52,4 @@ class Admin(UserMixin, db.Model):
 
 @login_manager.user_loader
 def load_user(id):
-    return Admin.query.get(int(id)) 
+    return Admin.query.get(int(id))
