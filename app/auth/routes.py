@@ -11,7 +11,7 @@ def login():
         password = request.form['password']
         user = Admin.query.filter_by(username=username).first()
         if user and user.check_password(password):
-            login_user(user)
+            login_user(user, remember=True)
             return redirect(url_for('admin.dashboard'))
         flash('Invalid username or password')
     return render_template('auth/login.html')
