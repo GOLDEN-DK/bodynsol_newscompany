@@ -10,6 +10,8 @@ class Config:
     REMEMBER_COOKIE_DURATION = timedelta(days=30)
     # ALL바른 필라테스 충남대점 홈페이지 (메뉴·푸터·기사 하단 링크)
     ALLBARUN_URL = os.environ.get('ALLBARUN_URL', 'https://allbarun.co.kr')
+    # 매거진 대표 주소 (canonical·sitemap·RSS 기준, 다른 호스트는 이 주소로 이동)
+    SITE_URL = os.environ.get('SITE_URL', 'https://bodynsol.info')
     # Use PostgreSQL URL for production
     SQLALCHEMY_DATABASE_URI = os.environ.get('POSTGRES_URL')
     if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith("postgres://"):

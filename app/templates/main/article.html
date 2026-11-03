@@ -1,4 +1,30 @@
-{% extends "base.html" %} {% block title %}{{ article.title }}{% endblock %} {%
+{% extends "base.html" %}
+{% set page_description = article_excerpt(article, 150) %}
+{% set page_image = article.main_image %}
+{% set og_type = "article" %}
+{% block structured_data %}
+<script type="application/ld+json">
+  {{ {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": article.title,
+    "description": article_excerpt(article, 150),
+    "image": [article.main_image] if article.main_image else [],
+    "datePublished": article.created_at.strftime('%Y-%m-%dT%H:%M:%S+00:00'),
+    "dateModified": article.created_at.strftime('%Y-%m-%dT%H:%M:%S+00:00'),
+    "author": {"@type": "Organization", "name": article.author or "ALL바른매거진"},
+    "publisher": {
+      "@type": "Organization",
+      "name": "ALL바른 필라테스 충남대점",
+      "url": config.ALLBARUN_URL
+    },
+    "mainEntityOfPage": canonical_url,
+    "articleSection": article.category.name if article.category else none,
+    "inLanguage": "ko-KR"
+  }|tojson }}
+</script>
+{% endblock %}
+{% block title %}{{ article.title }}{% endblock %} {%
 block styles %} {{ super() }}
 <style>
   /* 모바일 최적화를 위한 스타일 */

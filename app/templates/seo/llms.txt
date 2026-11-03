@@ -1,0 +1,25 @@
+# ALL바른매거진
+
+> ALL바른 필라테스 충남대점이 발행하는 생활 속 건강 정보 매거진입니다. 운동, 자세, 통증 관리 등 몸을 바르게 쓰는 방법을 다룹니다. 이전 이름은 바디앤솔매거진입니다.
+
+- 발행처: ALL바른 필라테스 충남대점 ({{ config.ALLBARUN_URL }})
+- 사이트: {{ site_url }}/
+- 언어: 한국어
+
+## 주요 경로
+
+- [전체 기사 목록]({{ site_url }}/): 최신 기사부터 표시
+- [RSS 피드]({{ site_url }}/rss.xml): 최근 기사
+- [사이트맵]({{ site_url }}/sitemap.xml): 전체 기사 주소
+
+## 최근 기사
+{% for item in items %}
+- [{{ item.article.title }}]({{ site_url }}{{ url_for('main.article', id=item.article.id) }}): {{ item.excerpt }}
+{%- endfor %}
+
+## 센터 안내
+
+- [ALL바른 필라테스 충남대점 홈페이지]({{ config.ALLBARUN_URL }})
+- [공지사항]({{ config.ALLBARUN_URL }}/notices)
+- [카드뉴스]({{ config.ALLBARUN_URL }}/card-news)
+- [체험 신청]({{ config.ALLBARUN_URL }}/trial)

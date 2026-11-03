@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>{{ site_url }}/</loc>
+    {% if latest %}<lastmod>{{ latest.strftime('%Y-%m-%d') }}</lastmod>{% endif %}
+  </url>
+  {% for category in categories %}
+  <url>
+    <loc>{{ site_url }}{{ url_for('main.category', slug=category.slug) }}</loc>
+  </url>
+  {% endfor %}
+  {% for article in articles %}
+  <url>
+    <loc>{{ site_url }}{{ url_for('main.article', id=article.id) }}</loc>
+    {% if article.created_at %}<lastmod>{{ article.created_at.strftime('%Y-%m-%d') }}</lastmod>{% endif %}
+  </url>
+  {% endfor %}
+</urlset>

@@ -1,4 +1,6 @@
-{% extends "base.html" %} {% block title %}{{ category.name }}{% endblock %} {%
+{% extends "base.html" %}
+{% set page_description = "ALL바른매거진 " ~ category.name ~ " 기사 모음입니다. ALL바른 필라테스 충남대점이 전하는 생활 속 건강 정보를 확인하세요." %}
+{% block title %}{{ category.name }}{% endblock %} {%
 block content %}
 <div class="container">
   <h1 class="section-title section-title--page">{{ category.name }}</h1>

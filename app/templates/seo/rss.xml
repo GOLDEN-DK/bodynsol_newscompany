@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>ALL바른매거진</title>
+    <link>{{ site_url }}/</link>
+    <description>ALL바른 필라테스 충남대점이 전하는 생활 속 건강 정보 매거진</description>
+    <language>ko</language>
+    <atom:link href="{{ site_url }}/rss.xml" rel="self" type="application/rss+xml" />
+    {% if last_build %}<lastBuildDate>{{ last_build }}</lastBuildDate>{% endif %}
+    {% for item in items %}
+    <item>
+      <title>{{ item.article.title }}</title>
+      <link>{{ site_url }}{{ url_for('main.article', id=item.article.id) }}</link>
+      <guid isPermaLink="true">{{ site_url }}{{ url_for('main.article', id=item.article.id) }}</guid>
+      <description>{{ item.description }}</description>
+      {% if item.pub_date %}<pubDate>{{ item.pub_date }}</pubDate>{% endif %}
+      {% if item.article.category %}<category>{{ item.article.category.name }}</category>{% endif %}
+      {% if item.article.author %}<dc:creator>{{ item.article.author }}</dc:creator>{% endif %}
+    </item>
+    {% endfor %}
+  </channel>
+</rss>

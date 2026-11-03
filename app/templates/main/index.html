@@ -1,4 +1,24 @@
-{% extends "base.html" %} {% block title %}홈{% endblock %} {% block content %}
+{% extends "base.html" %}
+{% set page_image = hero.main_image if hero else none %}
+{% block full_title %}ALL바른매거진 | ALL바른 필라테스 충남대점 건강 매거진{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+  {{ {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "ALL바른매거진",
+    "alternateName": "바디앤솔매거진",
+    "url": site_url ~ "/",
+    "inLanguage": "ko-KR",
+    "publisher": {
+      "@type": "Organization",
+      "name": "ALL바른 필라테스 충남대점",
+      "url": config.ALLBARUN_URL
+    }
+  }|tojson }}
+</script>
+{% endblock %}
+{% block title %}홈{% endblock %} {% block content %}
 <div class="container">
   {% if articles.page == 1 %}
   <!-- 센터 소개 -->
