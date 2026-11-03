@@ -1,5 +1,6 @@
 # 검색엔진·AI 수집용 경로(robots, sitemap, RSS, llms.txt)와 대표 주소 처리.
 import html
+import os
 import re
 from datetime import timezone
 from email.utils import format_datetime
@@ -114,3 +115,10 @@ def llms_txt():
 def favicon():
     return send_from_directory(current_app.static_folder, 'favicon.ico',
                                mimetype='image/vnd.microsoft.icon')
+
+
+@bp.route('/naverc6e9cd28b9b7f0c9e9921fb74e89d7a5.html')
+def naver_site_verification():
+    # 네이버 서치어드바이저 사이트 소유 확인 파일
+    return send_from_directory(os.path.join(current_app.static_folder, 'verification'),
+                               'naverc6e9cd28b9b7f0c9e9921fb74e89d7a5.html')
