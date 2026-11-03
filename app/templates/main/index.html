@@ -1,67 +1,94 @@
 {% extends "base.html" %} {% block title %}홈{% endblock %} {% block content %}
 <div class="container">
-  <!-- 메인 기사 섹션 -->
-  {% for article in articles.items %} {% if article.is_main %}
-  <div class="main-article mb-5">
-    <h1 class="display-4 mb-3">{{ article.title }}</h1>
-    {% if article.main_image %}
-    <div class="main-image-container mb-3">
-      <img
-        src="{{ article.main_image }}"
-        alt="{{ article.title }}"
-        class="img-fluid w-100 main-image"
-      />
-    </div>
-    {% endif %}
-    <p class="lead">
-      {% if article.summary %} {{ article.summary|striptags }} {% else %} {{
-      article.content[:100]|striptags ~ '...' if article.content|length > 100
-      else article.content|striptags }} {% endif %}
-    </p>
-    <div class="article-meta mb-3">
-      <small class="text-muted">
-        {{ article.category.name if article.category }} | {{
-        article.created_at.strftime('%Y-%m-%d') }} | {{ article.author }}
-      </small>
+  {% if articles.page == 1 %}
+  <!-- 센터 소개 -->
+  <section class="brand-intro mb-4">
+    <div>
+      <p class="brand-intro__eyebrow">ALL바른 필라테스 충남대점</p>
+      <p class="brand-intro__text">
+        센터가 직접 전하는 생활 속 건강 정보
+      </p>
     </div>
     <a
-      href="{{ url_for('main.article', id=article.id) }}"
-      class="btn btn-primary"
-      >자세히 보기</a
+      class="btn btn-brand btn-sm"
+      href="{{ config.ALLBARUN_URL }}"
+      target="_blank"
+      rel="noopener"
+      >센터 홈페이지</a
     >
-  </div>
-  {% endif %} {% endfor %}
+  </section>
+  {% endif %}
 
-  <!-- 일반 기사 목록 -->
-  <div class="row">
-    {% for article in articles.items %} {% if not article.is_main %}
-    <div class="col-md-6 mb-4">
-      <div class="card h-100">
-        <div class="card-body">
-          <h2 class="card-title h5">{{ article.title }}</h2>
-          {% if article.summary %}
-          <p class="card-text">{{ article.summary|striptags }}</p>
-          {% else %}
-          <p class="card-text">
-            {{ article.content[:100]|striptags ~ '...' if article.content|length
-            > 100 else article.content|striptags }}
-          </p>
-          {% endif %}
-          <div class="article-meta mb-2">
-            <small class="text-muted">
-              {{ article.category.name if article.category }} | {{
-              article.created_at.strftime('%Y-%m-%d') }}
-            </small>
-          </div>
-          <a
-            href="{{ url_for('main.article', id=article.id) }}"
-            class="btn btn-sm btn-primary"
-            >자세히 보기</a
-          >
-        </div>
+  <!-- 대표 기사 -->
+  {% if hero %}
+  <article
+    class="hero-card mb-4{% if hero.main_image %} hero-card--image{% endif %}"
+  >
+    {% if hero.main_image %}
+    <img
+      src="{{ hero.main_image }}"
+      alt="{{ hero.title }}"
+      class="hero-card__image"
+    />
+    {% endif %}
+    <div class="hero-card__body">
+      {% if hero.category %}
+      <span class="article-badge">{{ hero.category.name }}</span>
+      {% endif %}
+      <h1 class="hero-card__title">
+        <a
+          href="{{ url_for('main.article', id=hero.id) }}"
+          class="stretched-link"
+          >{{ hero.title }}</a
+        >
+      </h1>
+      <p class="hero-card__summary">
+        {{ (hero.summary or hero.content)|striptags|truncate(160, true) }}
+      </p>
+      <div class="article-item__meta">
+        {{ hero.created_at.strftime('%Y-%m-%d') }} · {{ hero.author }}
       </div>
     </div>
-    {% endif %} {% endfor %}
+  </article>
+  {% endif %}
+
+  <!-- 기사 목록 -->
+  <h2 class="section-title">최신 기사</h2>
+  <div class="row g-3">
+    {% for article in articles.items %}
+    <div class="col-12 col-lg-6">
+      <article class="article-item">
+        {% if article.main_image %}
+        <img
+          src="{{ article.main_image }}"
+          alt=""
+          class="article-item__thumb"
+          loading="lazy"
+        />
+        {% endif %}
+        <div class="article-item__body">
+          <h3 class="article-item__title">
+            <a
+              href="{{ url_for('main.article', id=article.id) }}"
+              class="stretched-link"
+              >{{ article.title }}</a
+            >
+          </h3>
+          <p class="article-item__summary">
+            {{ (article.summary or article.content)|striptags|truncate(120, true) }}
+          </p>
+          <div class="article-item__meta">
+            {% if article.category %}{{ article.category.name }} · {% endif %}{{
+            article.created_at.strftime('%Y-%m-%d') }}
+          </div>
+        </div>
+      </article>
+    </div>
+    {% else %}
+    <div class="col-12">
+      <div class="alert alert-info">등록된 기사가 없습니다.</div>
+    </div>
+    {% endfor %}
   </div>
 
   <!-- 페이지네이션 -->
@@ -91,26 +118,4 @@
   </nav>
   {% endif %}
 </div>
-
-<style>
-  .main-image-container {
-    height: 500px;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .main-image {
-    width: 1300px;
-    height: 500px;
-    object-fit: cover;
-    object-position: center;
-  }
-
-  .main-article {
-    background-color: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-</style>
 {% endblock %}

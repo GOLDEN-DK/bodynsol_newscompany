@@ -111,6 +111,31 @@ block styles %} {{ super() }}
         </div>
         {% endif %}
 
+        <!-- 센터 안내 -->
+        <aside class="brand-cta">
+          <p class="brand-cta__title">ALL바른 필라테스 충남대점</p>
+          <p class="brand-cta__text">
+            이 글은 ALL바른 필라테스 충남대점이 전하는 건강 정보입니다. 내 몸에
+            맞는 운동이 궁금하다면 체험 수업으로 시작해 보세요.
+          </p>
+          <div class="d-flex flex-wrap gap-2">
+            <a
+              class="btn btn-brand"
+              href="{{ config.ALLBARUN_URL }}/trial"
+              target="_blank"
+              rel="noopener"
+              >체험 신청</a
+            >
+            <a
+              class="btn btn-outline-dark"
+              href="{{ config.ALLBARUN_URL }}"
+              target="_blank"
+              rel="noopener"
+              >홈페이지 방문</a
+            >
+          </div>
+        </aside>
+
         <div class="back-button">
           {% if request.referrer %}
           <a href="{{ request.referrer }}" class="btn btn-secondary">

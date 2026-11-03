@@ -16,9 +16,9 @@
     {% endblock %}
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark site-nav mb-4">
       <div class="container">
-        <a class="navbar-brand" href="{{ url_for('main.index') }}"
+        <a class="navbar-brand site-brand" href="{{ url_for('main.index') }}"
           >ALL바른매거진</a
         >
         <button
@@ -37,7 +37,7 @@
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('main.index') }}">홈</a>
             </li>
-            {% for category in categories %}
+            {% for category in nav_categories %}
             <li class="nav-item">
               <a
                 class="nav-link"
@@ -47,6 +47,39 @@
               </a>
             </li>
             {% endfor %}
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="allbarunMenu"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                >ALL바른 필라테스</a
+              >
+              <ul class="dropdown-menu" aria-labelledby="allbarunMenu">
+                <li>
+                  <a class="dropdown-item" href="{{ config.ALLBARUN_URL }}" target="_blank" rel="noopener"
+                    >홈페이지</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{{ config.ALLBARUN_URL }}/notices" target="_blank" rel="noopener"
+                    >공지사항</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{{ config.ALLBARUN_URL }}/card-news" target="_blank" rel="noopener"
+                    >카드뉴스</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{{ config.ALLBARUN_URL }}/trial" target="_blank" rel="noopener"
+                    >체험 신청</a
+                  >
+                </li>
+              </ul>
+            </li>
           </ul>
           <ul class="navbar-nav">
             {% if current_user.is_authenticated %}
@@ -94,6 +127,16 @@
       <div class="container">
         <div class="row">
           <div class="col-12">
+            <!-- 센터 홈페이지 링크 -->
+            <p class="mb-2">
+              <a
+                class="footer-link"
+                href="{{ config.ALLBARUN_URL }}"
+                target="_blank"
+                rel="noopener"
+                >ALL바른 필라테스 충남대점 홈페이지 바로가기 &rarr;</a
+              >
+            </p>
             <!-- 회사 정보 -->
             <p class="mb-1" style="font-size: 13px; color: #666">
               ALL바른매거진(바디앤솔매거진) : 대전광역시 유성구 대학로 84 &nbsp;&nbsp; 발행인 :

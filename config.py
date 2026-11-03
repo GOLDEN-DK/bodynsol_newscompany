@@ -8,6 +8,8 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-key-please-change'
     # 로그인 유지 기간 (Flask-Login remember 쿠키)
     REMEMBER_COOKIE_DURATION = timedelta(days=30)
+    # ALL바른 필라테스 충남대점 홈페이지 (메뉴·푸터·기사 하단 링크)
+    ALLBARUN_URL = os.environ.get('ALLBARUN_URL', 'https://allbarun.co.kr')
     # Use PostgreSQL URL for production
     SQLALCHEMY_DATABASE_URI = os.environ.get('POSTGRES_URL')
     if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith("postgres://"):

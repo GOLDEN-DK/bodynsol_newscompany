@@ -1,35 +1,47 @@
 {% extends "base.html" %} {% block title %}{{ category.name }}{% endblock %} {%
 block content %}
 <div class="container">
-  <h1 class="mb-4">{{ category.name }}</h1>
+  <h1 class="section-title section-title--page">{{ category.name }}</h1>
 
-  {% for article in articles.items %}
-  <div class="card mb-4">
-    <div class="card-body">
-      <h2 class="card-title h4">{{ article.title }}</h2>
-      {% if article.summary %}
-      <p class="card-text">{{ article.summary }}</p>
-      {% endif %}
-      <div class="article-meta mb-2">
-        <small class="text-muted">
-          작성자: {{ article.author }} | 작성일: {{
-          article.created_at.strftime('%Y-%m-%d') }}
-        </small>
-      </div>
-      <a
-        href="{{ url_for('main.article', id=article.id) }}"
-        class="btn btn-primary"
-        >자세히 보기</a
-      >
+  <div class="row g-3">
+    {% for article in articles.items %}
+    <div class="col-12 col-lg-6">
+      <article class="article-item">
+        {% if article.main_image %}
+        <img
+          src="{{ article.main_image }}"
+          alt=""
+          class="article-item__thumb"
+          loading="lazy"
+        />
+        {% endif %}
+        <div class="article-item__body">
+          <h2 class="article-item__title">
+            <a
+              href="{{ url_for('main.article', id=article.id) }}"
+              class="stretched-link"
+              >{{ article.title }}</a
+            >
+          </h2>
+          <p class="article-item__summary">
+            {{ (article.summary or article.content)|striptags|truncate(120, true) }}
+          </p>
+          <div class="article-item__meta">
+            {{ article.created_at.strftime('%Y-%m-%d') }} · {{ article.author }}
+          </div>
+        </div>
+      </article>
     </div>
+    {% else %}
+    <div class="col-12">
+      <div class="alert alert-info">등록된 기사가 없습니다.</div>
+    </div>
+    {% endfor %}
   </div>
-  {% else %}
-  <div class="alert alert-info">등록된 기사가 없습니다.</div>
-  {% endfor %}
 
   <!-- Pagination -->
   {% if articles.pages > 1 %}
-  <nav aria-label="Page navigation">
+  <nav aria-label="Page navigation" class="mt-4">
     <ul class="pagination justify-content-center">
       {% if articles.has_prev %}
       <li class="page-item">
