@@ -20,3 +20,14 @@
   - 홈은 최신 메인 기사 1건을 대표 기사로 크게 보여 주고, 나머지는 썸네일 목록으로 보여 준다.
 - 근거: 사용자 요청(건강 카테고리만 운영, 센터 소개·홈페이지 연결 필요, 모바일 친화 레이아웃). 365일 기준은 Lead 기본값이다.
 - 영향: `app/main/routes.py`, `app/templates/base.html`, `app/templates/main/index.html`, `app/templates/main/category.html`, `app/templates/main/article.html`, `app/static/css/style.css`, `config.py`(`ALLBARUN_URL`).
+
+## 2026-11-03 검색엔진·AI 수집 설정
+
+- 결정: 검색엔진과 AI가 매거진을 찾고 이해할 수 있게 기본 수집 설정을 갖춘다.
+  - 대표 주소는 `https://bodynsol.info`(www 없음)로 한다(`config.py`의 `SITE_URL`). `www.bodynsol.info`와 Railway 기본 주소로 들어온 요청은 대표 주소로 영구 이동(301, GET·HEAD 외 308)한다.
+  - 모든 페이지에 canonical, 검색 설명(meta description), 공유 미리보기(Open Graph·Twitter 카드), favicon(홈페이지와 같은 로고)을 둔다. 기사에는 구조화 데이터(Article: 작성자·발행일·발행처 ALL바른 필라테스 충남대점)를, 홈에는 WebSite 구조화 데이터를 둔다.
+  - `/robots.txt`(관리자·로그인 경로 차단, sitemap 위치), `/sitemap.xml`(홈·글이 있는 카테고리·전체 기사), `/rss.xml`(최근 30건), `/llms.txt`(매체 소개·최근 20건)를 제공한다.
+  - 홈 제목은 `ALL바른매거진 | ALL바른 필라테스 충남대점 건강 매거진`으로 한다. 다른 페이지 제목 형식(`… - ALL바른매거진`)은 유지한다.
+- 근거: 사용자 요청(검색엔진·AI·외부 사이트 노출 개선).
+- 영향: `app/main/seo.py`, `app/main/__init__.py`, `app/templates/base.html`, `app/templates/main/index.html`, `app/templates/main/category.html`, `app/templates/main/article.html`, `app/templates/seo/`, `app/static/favicon.ico`, `config.py`.
+- 사용자 작업: Google Search Console과 네이버 서치어드바이저에 `bodynsol.info`를 등록하고 `sitemap.xml`과 `rss.xml`을 제출한다.
