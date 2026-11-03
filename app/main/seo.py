@@ -122,3 +122,10 @@ def naver_site_verification():
     # 네이버 서치어드바이저 사이트 소유 확인 파일
     return send_from_directory(os.path.join(current_app.static_folder, 'verification'),
                                'naverc6e9cd28b9b7f0c9e9921fb74e89d7a5.html')
+
+
+@bp.route('/google39af60d5bb377080.html')
+def google_site_verification():
+    # Google Search Console 사이트 소유 확인 파일
+    return send_from_directory(os.path.join(current_app.static_folder, 'verification'),
+                               'google39af60d5bb377080.html')
